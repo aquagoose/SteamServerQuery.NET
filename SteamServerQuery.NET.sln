@@ -1,0 +1,22 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SteamServerQuery.NET", "SteamServerQuery.NET\SteamServerQuery.NET.csproj", "{55F467CB-7F1E-449E-BF4A-CD30C07F51AF}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SteamServerQuery.NET.Tests", "SteamServerQuery.NET.Tests\SteamServerQuery.NET.Tests.csproj", "{DC962D2C-7C68-4E25-9D1B-9FF3E475F1C9}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{55F467CB-7F1E-449E-BF4A-CD30C07F51AF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{55F467CB-7F1E-449E-BF4A-CD30C07F51AF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{55F467CB-7F1E-449E-BF4A-CD30C07F51AF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{55F467CB-7F1E-449E-BF4A-CD30C07F51AF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DC962D2C-7C68-4E25-9D1B-9FF3E475F1C9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DC962D2C-7C68-4E25-9D1B-9FF3E475F1C9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DC962D2C-7C68-4E25-9D1B-9FF3E475F1C9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DC962D2C-7C68-4E25-9D1B-9FF3E475F1C9}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal

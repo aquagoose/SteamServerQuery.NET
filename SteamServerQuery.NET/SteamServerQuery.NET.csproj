@@ -4,6 +4,20 @@
         <TargetFramework>netstandard2.0</TargetFramework>
         <RootNamespace>SteamServerQuery</RootNamespace>
         <LangVersion>9</LangVersion>
+        <Title>SteamServerQuery.NET</Title>
+        <Authors>ohtrobinson</Authors>
+        <Description>Query Steam servers quickly to get information about the server &amp; players.</Description>
+        <RepositoryUrl>https://github.com/ohtrobinson/SteamServerQuery.NET</RepositoryUrl>
+        <PackageTags>Servers, Query, Steam</PackageTags>
+        <Company>ohtrobinson</Company>
+        <AssemblyVersion>1.0.0</AssemblyVersion>
+        <FileVersion>1.0.0</FileVersion>
+        <PackageLicenseFile>LICENSE</PackageLicenseFile>
+        <PackageVersion>1.0.1</PackageVersion>
     </PropertyGroup>
+    
+    <ItemGroup>
+        <None Include="../LICENSE" Pack="true" PackagePath="" />
+    </ItemGroup>
 
 </Project>

@@ -14,6 +14,7 @@ namespace SteamServerQuery
         /// </summary>
         /// <param name="ip">The IP of the server.</param>
         /// <param name="port">The port of the server.</param>
+        /// <param name="timeout">The number of milliseconds the request will time out if no data is received.</param>
         /// <returns>The available info the server returned.</returns>
         public static async Task<ServerInfo> QueryServerAsync(string ip, int port, int timeout = 5000)
         {
@@ -45,6 +46,13 @@ namespace SteamServerQuery
             }
         }
 
+        /// <summary>
+        /// Get an array of players & their info on the given server, asynchronously.
+        /// </summary>
+        /// <param name="ip">The IP of the server.</param>
+        /// <param name="port">The port of the server.</param>
+        /// <param name="timeout">The number of milliseconds the request will time out if no data is received.</param>
+        /// <returns>An array of <see cref="PlayerInfo"/>.</returns>
         public static async Task<PlayerInfo[]> QueryPlayersAsync(string ip, int port, int timeout = 5000)
         {
             using (UdpClient client = new UdpClient(ip, port))
@@ -55,19 +63,13 @@ namespace SteamServerQuery
                 };
 
                 byte[] recievedData = await SendReceiveData(requestHeader, client, timeout);
-                
-                Console.WriteLine(BitConverter.ToString(recievedData).Replace('-', ' '));
 
                 if (recievedData[4] == 0x41)
                 {
                     recievedData[4] = 0x55;
-                    
-                    Console.WriteLine(BitConverter.ToString(recievedData).Replace('-', ' '));
 
                     recievedData = await SendReceiveData(recievedData, client, timeout);
                 }
-                
-                Console.WriteLine(BitConverter.ToString(recievedData).Replace('-', ' '));
 
                 using (MemoryStream memoryStream = new MemoryStream(recievedData))
                 {
@@ -120,9 +122,29 @@ namespace SteamServerQuery
             return receivedData;
         }
 
-        public static ServerInfo QueryServer(string ip, int port)
+
+        /// <summary>
+        /// Query a steam server with the given IP and port, synchronously.
+        /// </summary>
+        /// <param name="ip">The IP of the server.</param>
+        /// <param name="port">The port of the server.</param>
+        /// <param name="timeout">The number of milliseconds the request will time out if no data is received.</param>
+        /// <returns>The available info the server returned.</returns>
+        public static ServerInfo QueryServer(string ip, int port, int timeout = 5000)
         {
-            return QueryServerAsync(ip, port).GetAwaiter().GetResult();
+            return QueryServerAsync(ip, port, timeout).GetAwaiter().GetResult();
+        }
+
+        /// <summary>
+        /// Get an array of players & their info on the given server, synchronously.
+        /// </summary>
+        /// <param name="ip">The IP of the server.</param>
+        /// <param name="port">The port of the server.</param>
+        /// <param name="timeout">The number of milliseconds the request will time out if no data is received.</param>
+        /// <returns>An array of <see cref="PlayerInfo"/>.</returns>
+        public static PlayerInfo[] QueryPlayers(string ip, int port, int timeout = 5000)
+        {
+            return QueryPlayersAsync(ip, port, timeout).GetAwaiter().GetResult();
         }
     }
 }

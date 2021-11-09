@@ -73,6 +73,81 @@ namespace SteamServerQuery.Tests
                         Console.ForegroundColor = ConsoleColor.Red;
                         Console.WriteLine($"Test FAIL - {e}");
                         Console.ForegroundColor = color;
+                        throw;
+                    }
+                }
+
+                server++;
+            }
+        }
+
+        [TestMethod]
+        public async Task TestPlayersQuery()
+        {
+            (string, int, bool)[] servers = new (string, int, bool)[]
+            {
+                // Space engineers server
+                ( "131.153.23.218", 10816, false ),
+                ( "88.87.69.183", 27016, false ),
+                ( "93.186.198.191", 27016, false ),
+
+                // Rust server
+                ( "147.135.104.162", 28015, false ),
+                ( "104.238.229.65", 28015, false ),
+
+                // CSgo server
+                ( "145.239.5.44", 27000, false ),
+                ( "54.37.245.51", 25135, false ),
+                ( "185.114.224.63", 27169, false ),
+                
+                // Random servers/invalid
+                ( "0.0.0.0", 0, true ),
+                ( "108.61.156.4", 443, true )
+            };
+            
+            StringBuilder sb = new StringBuilder();
+            
+            int server = 0;
+            foreach ((string ip, int port, bool shouldFail) in servers)
+            {
+                ConsoleColor color = Console.ForegroundColor;
+                Console.ForegroundColor = ConsoleColor.Cyan;
+                Console.WriteLine($"Testing server {server}.");
+                Console.ForegroundColor = color;
+                try
+                {
+                   PlayerInfo[] infos = await SteamServer.QueryPlayersAsync(ip, port);
+                   foreach (PlayerInfo info in infos)
+                   {
+                       foreach (PropertyInfo property in typeof(PlayerInfo).GetProperties())
+                           sb.AppendLine($"{property.Name}: {property.GetValue(info)}");
+                   }
+
+                   Console.WriteLine(sb.ToString());
+                    
+                   Console.ForegroundColor = ConsoleColor.Green;
+                   Console.WriteLine("Test pass");
+                   Console.ForegroundColor = color;
+                   Console.WriteLine("\n");
+                   sb.Clear();
+                }
+                catch (Exception e)
+                {
+                    if (shouldFail)
+                    {
+                        Console.WriteLine(e);
+                        Console.WriteLine("\n");
+                        Console.ForegroundColor = ConsoleColor.Green;
+                        Console.WriteLine("Test pass");
+                        Console.ForegroundColor = color;
+                        Console.WriteLine("\n");
+                    }
+                    else
+                    {
+                        Console.ForegroundColor = ConsoleColor.Red;
+                        Console.WriteLine($"Test FAIL - {e}");
+                        Console.ForegroundColor = color;
+                        throw;
                     }
                 }
 

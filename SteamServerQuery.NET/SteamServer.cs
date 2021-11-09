@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Net;
 using System.Net.Sockets;
 using System.Threading.Tasks;
@@ -27,8 +28,6 @@ namespace SteamServerQuery
                 
                 // Send data and wait for response.
                 byte[] receivedData = await SendReceiveData(requestHeader, client, timeout);
-                
-                Console.WriteLine(receivedData[4] == 0x41);
 
                 // Oops! The server returned a challenge number.
                 if (receivedData[4] == 0x41)
@@ -43,6 +42,57 @@ namespace SteamServerQuery
                 }
 
                 return new ServerInfo(receivedData);
+            }
+        }
+
+        public static async Task<PlayerInfo[]> QueryPlayersAsync(string ip, int port, int timeout = 5000)
+        {
+            using (UdpClient client = new UdpClient(ip, port))
+            {
+                byte[] requestHeader =
+                {
+                    0xFF, 0xFF, 0xFF, 0xFF, 0x55, 0xFF, 0xFF, 0xFF, 0xFF
+                };
+
+                byte[] recievedData = await SendReceiveData(requestHeader, client, timeout);
+                
+                Console.WriteLine(BitConverter.ToString(recievedData).Replace('-', ' '));
+
+                if (recievedData[4] == 0x41)
+                {
+                    recievedData[4] = 0x55;
+                    
+                    Console.WriteLine(BitConverter.ToString(recievedData).Replace('-', ' '));
+
+                    recievedData = await SendReceiveData(recievedData, client, timeout);
+                }
+                
+                Console.WriteLine(BitConverter.ToString(recievedData).Replace('-', ' '));
+
+                using (MemoryStream memoryStream = new MemoryStream(recievedData))
+                {
+                    using (BinaryReader reader = new BinaryReader(memoryStream))
+                    {
+                        // Useless data (all F's)
+                        reader.ReadBytes(4);
+                        if (reader.ReadByte() != 0x44)
+                            throw new SteamException(
+                                "The data received from the server is not valid - header data must equal 0x44");
+                        int players = reader.ReadByte();
+                        List<PlayerInfo> infos = new List<PlayerInfo>();
+                        for (int i = 0; i < players; i++)
+                        {
+                            // Index - we don't need this value
+                            reader.ReadByte();
+                            string name = reader.ReadNullTerminatedString();
+                            int score = reader.ReadInt32();
+                            float duration = reader.ReadSingle();
+                            infos.Add(new PlayerInfo(name, score, duration));
+                        }
+
+                        return infos.ToArray();
+                    }
+                }
             }
         }
 
